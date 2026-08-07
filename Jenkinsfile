@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/yourusername/CalculatorApp.git'
+                url: 'https://github.com/siddhi3022/mevans.git'
             }
         }
 
