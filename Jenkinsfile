@@ -1,21 +1,12 @@
-
 pipeline {
-
     agent any
 
     tools {
         maven 'Maven3'
-        jdk 'JDK8'
+        jdk 'JDK17'
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/siddhi3022/mevans.git'
-            }
-        }
 
         stage('Build') {
             steps {
@@ -27,24 +18,31 @@ pipeline {
             steps {
                 bat 'mvn test'
             }
+        }
 
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
+        stage('Package') {
+            steps {
+                bat 'mvn package'
             }
         }
 
+        stage('Deploy') {
+            steps {
+                bat '''
+                if not exist C:\\Deployments mkdir C:\\Deployments
+                copy target\\CalculatorApp-1.0.jar C:\\Deployments
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo 'All tests passed successfully.'
+            echo 'Application deployed successfully!'
         }
 
         failure {
-            echo 'One or more tests failed.'
+            echo 'Deployment failed.'
         }
     }
 }
-
